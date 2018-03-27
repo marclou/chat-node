@@ -9,10 +9,5 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(message) {
-    console.log('New Meesage : ', message);
-});
-
-socket.emit('createMessage', {
-    from: 'wonji',
-    text: 'Helllooo'
+    console.log('New Message : ', message);
 });
