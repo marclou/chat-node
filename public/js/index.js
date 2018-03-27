@@ -9,13 +9,24 @@ socket.on('disconnect', function() {
 });
 
 socket.on('newMessage', function(message) {
-    const { from, text } = message;
-    const li = jQuery('<li></li>');
+    var { from, text } = message;
+    var li = jQuery('<li></li>');
 
     li.text(`${from} : ${text}`);
 
     jQuery('#messages').append(li);
 });
+
+socket.on('newLocationMessage', function(message) {
+    var { from, url } = message;
+    var li = jQuery('<li></li>');
+    var a = jQuery('<a target="_blank"> My current location </a>');
+
+    li.text(`${from}: `);
+    a.attr('href', url);
+    li.append(a);
+    jQuery('#messages').append(li);
+})
 
 
 jQuery('#message-form').on('submit', function(e) {
@@ -27,3 +38,31 @@ jQuery('#message-form').on('submit', function(e) {
         createdAt: new Date().getTime()
     });
 });
+
+var locationButton = jQuery('#send-location');
+
+locationButton.on('click', function() {
+	if (!navigator.geolocation) {
+		return alert('Not supported by your browser..');
+	}
+
+	navigator.geolocation.getCurrentPosition(emitLocation, errorLocation, locationOptions);
+});
+
+
+function emitLocation(location) {
+    socket.emit('createLocationMessage', {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
+    });
+};
+
+function errorLocation() {
+    return alert('Can not fetch location');
+};
+
+var locationOptions = {
+  enableHighAccuracy: false,
+  timeout: 7000,
+  maximumAge: Infinity
+};
