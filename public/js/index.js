@@ -1,20 +1,20 @@
 var socket = io();
 
 socket.on('newMessage', function(message) {
-    var { from, text } = message;
+    var { from, text ,createdAt } = message;
     var li = jQuery('<li></li>');
 
-    li.text(`${from} : ${text}`);
+    li.text(`${from} ${createdAt} : ${text}`);
 
     jQuery('#messages').append(li);
 });
 
 socket.on('newLocationMessage', function(message) {
-    var { from, url } = message;
+    var { from, url, createdAt } = message;
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank"> My current location </a>');
 
-    li.text(`${from}: `);
+    li.text(`${from} ${createdAt}: `);
     a.attr('href', url);
     li.append(a);
     jQuery('#messages').append(li);
