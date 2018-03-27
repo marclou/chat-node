@@ -2,23 +2,27 @@ var socket = io();
 
 socket.on('newMessage', function(message) {
     var { from, text ,createdAt } = message;
-    var li = jQuery('<li></li>');
+    var template = jQuery('#message-template').html();
+    var html = Mustache.render(template, {
+        text,
+        from,
+        createdAt
+    });
 
-    li.text(`${from} ${createdAt} : ${text}`);
-
-    jQuery('#messages').append(li);
+    jQuery('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function(message) {
     var { from, url, createdAt } = message;
-    var li = jQuery('<li></li>');
-    var a = jQuery('<a target="_blank"> My current location </a>');
+    var template = jQuery("#location-message-template").html();
+    var html = Mustache.render(template, {
+        from,
+        createdAt,
+        url
+    });
 
-    li.text(`${from} ${createdAt}: `);
-    a.attr('href', url);
-    li.append(a);
-    jQuery('#messages').append(li);
-})
+    jQuery('#messages').append(html);
+});
 
 
 jQuery('#message-form').on('submit', function(e) {
