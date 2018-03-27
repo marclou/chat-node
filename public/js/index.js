@@ -1,13 +1,5 @@
 var socket = io();
 
-socket.on('connect', function() {
-    console.log('connected !');
-});
-
-socket.on('disconnect', function() {
-    console.log('disconnected..');
-});
-
 socket.on('newMessage', function(message) {
     var { from, text } = message;
     var li = jQuery('<li></li>');
@@ -31,14 +23,19 @@ socket.on('newLocationMessage', function(message) {
 
 jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();
+    var messageTextBox = jQuery('[name=message]');
 
     socket.emit('createMessage', {
         from: 'User',
-        text: jQuery('[name=message]').val(),
+        text: messageTextBox.val(),
         createdAt: new Date().getTime()
+    }, function() {
+        messageTextBox.val('');
     });
 });
 
+
+// Location stuffs
 var locationButton = jQuery('#send-location');
 
 locationButton.on('click', function() {
@@ -46,11 +43,14 @@ locationButton.on('click', function() {
 		return alert('Not supported by your browser..');
 	}
 
+    locationButton.attr('disabled', 'disabled').text('Sending...');
+
 	navigator.geolocation.getCurrentPosition(emitLocation, errorLocation, locationOptions);
 });
 
 
 function emitLocation(location) {
+    locationButton.removeAttr('disabled').text('Send Location');
     socket.emit('createLocationMessage', {
         lat: location.coords.latitude,
         lng: location.coords.longitude
@@ -58,11 +58,12 @@ function emitLocation(location) {
 };
 
 function errorLocation() {
+    locationButton.removeAttr('disabled').text('Send Location');
     return alert('Can not fetch location');
 };
 
 var locationOptions = {
   enableHighAccuracy: false,
   timeout: 7000,
-  maximumAge: Infinity
+  maximumAge: 10000
 };

@@ -1,3 +1,9 @@
 const expect = require('expect');
 
-const { generateMessage } = require('./message');
+const { generateMessage generateLocationMessage } = require('./message');
+
+describe('', () => {
+    it('', () => {
+
+    });
+});
