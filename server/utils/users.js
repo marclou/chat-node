@@ -1,5 +1,4 @@
 class Users {
-
     constructor() {
         this.users = [];
     }
@@ -8,6 +7,7 @@ class Users {
         let user = {id, name, room};
 
         this.users.push(user);
+
         return user;
     }
 
@@ -15,8 +15,10 @@ class Users {
         let userToRemove = this.getUser(id);
 
         if (userToRemove) {
-            this.users = this.users.filter(user => user.id = userToRemove.id);
+            this.users = this.users.filter(user => user.id !== userToRemove.id);
         }
+        
+        return userToRemove;
     }
 
     getUser(id) {
@@ -30,8 +32,8 @@ class Users {
     }
 
 
-};
+}
 
-module.export = {
+module.exports = {
     Users
-};
+}

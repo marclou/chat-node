@@ -25,7 +25,7 @@ socket.on('connect', function() {
             alert(err);
             window.location.href = '/';
         } else {
-            
+
         }
     });
 });
@@ -54,6 +54,16 @@ socket.on('newLocationMessage', function(message) {
 
     jQuery('#messages').append(html);
     scrollToBottom();
+});
+
+socket.on('updateUserList', function(users) {
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach(function(user) {
+        ol.append(jQuery('<li></li>').text(user));
+    });
+
+    jQuery('#users').html(ol);
 });
 
 
