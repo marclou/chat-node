@@ -11,14 +11,24 @@ const port = process.env.PORT || '3000';
 const server = http.createServer(app);
 const io = socketIO(server);
 const { generateMessage, generateLocationMessage } = require('./utils/message.js');
+const { isRealString } = require('./utils/validation');
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-    console.log('New user connected');
 
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome on chat app!'));
-    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined !'))
+
+    socket.on('join', (params, callback) => {
+        const { name, room } = params;
+
+        if (!isRealString(name) || !isRealString(name)) {
+            callback('Name and room are required');
+        }
+        socket.join(room);
+        socket.emit('newMessage', generateMessage('Admin', `Welcome on room ${room}`));
+        socket.broadcast.to(room).emit('newMessage', generateMessage('Admin', `${name} jas joined.`));
+        callback();
+    });
 
     socket.on('createMessage', (message, callback) => {
         io.emit('newMessage', generateMessage(message.from, message.text));
